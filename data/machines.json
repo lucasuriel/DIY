@@ -1,0 +1,105 @@
+{
+  "_README": [
+    "Model sources and hotspot positions for every machine that loads a real 3D model.",
+    "",
+    "Coordinates are in NORMALISED MODEL UNITS, not scene units. Every model is rescaled",
+    "so its largest dimension is 1.0, centred on x and z, with its base sitting at y = 0.",
+    "So y = 0.5 is half the model's height, whatever the model's real size.",
+    "",
+    "Each spot is [x, y, z, viewAngleDeg]:",
+    "  x  left (-) to right (+)",
+    "  y  base (0) to top of the model",
+    "  z  back (-) to front (+)",
+    "  viewAngleDeg  where the camera swings to when the part is selected, 0 = front",
+    "",
+    "'scale' converts normalised units to scene units, i.e. how big the machine appears.",
+    "'parts' is only set for machines with a step-by-step teardown; the rest are one piece",
+    "with hotspots.",
+    "",
+    "Run scripts/propose-hotspots.py to get measured starting coordinates for a new model,",
+    "and scripts/qa.js to check that every spot still lands on the mesh."
+  ],
+
+  "moto": {
+    "complete": "/models/motorcycle.glb",
+    "scale": 4.0,
+    "spots": {
+      "fork": [-0.33, 0.27, 0.07, -25],
+      "handlebar": [-0.27, 0.47, 0.09, -25],
+      "frame": [-0.06, 0.34, 0.14, 15],
+      "engine": [-0.1, 0.23, 0.11, 0],
+      "chain": [0.26, 0.13, 0.11, 10]
+    }
+  },
+
+  "arm": {
+    "parts": "/models/robot-arm-parts.glb",
+    "complete": "/models/robot-arm-complete.glb",
+    "scale": 1.9
+  },
+
+  "prosthetic": {
+    "complete": "/models/prosthetic-arm.glb",
+    "scale": 3.4,
+    "spots": {
+      "socket": [-0.02, 0.13, 0.085, 0],
+      "battery": [0, 0.25, -0.075, 180],
+      "sensor": [-0.03, 0.38, 0.085, 0],
+      "cables": [-0.02, 0.54, 0.085, 0],
+      "actuator": [-0.03, 0.735, 0.06, 0],
+      "hand": [-0.03, 0.92, 0.045, 0]
+    }
+  },
+
+  "tablet": {
+    "complete": "/models/tablet.glb",
+    "scale": 3.0,
+    "spots": {
+      "display": [0, 0.55, 0.03, 0],
+      "chassis": [0.36, 0.5, 0, 75],
+      "board": [0, 0.8, -0.03, 180],
+      "battery": [0, 0.4, -0.03, 180]
+    }
+  },
+
+  "computer": {
+    "complete": "/models/laptop.glb",
+    "scale": 3.6,
+    "spots": {
+      "display": [0, 0.42, 0.33, 0],
+      "hinge": [0, 0.06, 0.24, 0],
+      "keyboard": [0, 0.06, 0.05, 0],
+      "trackpad": [0, 0.04, -0.28, 0],
+      "board": [-0.2, 0.05, 0.15, 0],
+      "cooling": [0.28, 0.05, 0.16, 30],
+      "battery": [0, 0.04, -0.18, 0]
+    }
+  },
+
+  "printer": {
+    "complete": "/models/printer-3d.glb",
+    "scale": 3.4,
+    "spots": {
+      "enclosure": [0.26, 0.42, 0.2, 35],
+      "bed": [0, 0.18, 0.05, 0],
+      "motion": [0, 0.5, -0.1, 0],
+      "toolhead": [0, 0.52, 0.08, 0],
+      "screen": [-0.2, 0.345, 0.25, -15],
+      "filament": [0, 0.92, 0.05, 0]
+    }
+  },
+
+  "reactor": {
+    "complete": "/models/bioreactor.glb",
+    "scale": 3.6,
+    "spots": {
+      "vessel": [-0.26, 0.47, 0.16, -10],
+      "sightglass": [-0.21, 0.45, 0.17, -10],
+      "agitator": [-0.2, 0.84, 0.05, 0],
+      "probes": [-0.38, 0.55, 0.12, -40],
+      "lines": [0.02, 0.55, 0.1, 0],
+      "harvest": [-0.26, 0.25, 0.15, -15],
+      "controller": [0.27, 0.7, 0.14, 20]
+    }
+  }
+}
