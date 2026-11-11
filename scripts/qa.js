@@ -103,9 +103,12 @@ async function measure(browser, file) {
   });
   const page = await browser.newPage({ viewport: { width: 1280, height: 820 } });
 
-  // The display font loads from Google Fonts after mount. Block it so a slow or
-  // unreachable network cannot stall the run; it has no bearing on the models.
-  await page.route("**fonts.g**", (r) => r.abort());
+  // The display font loads from Google Fonts after mount. Serve it as empty CSS so
+  // a slow or unreachable network cannot stall the run. Fulfilling rather than
+  // aborting keeps the console clean, so a real error is never lost in the noise.
+  await page.route("**fonts.g**", (r) =>
+    r.fulfill({ status: 200, contentType: "text/css", body: "" })
+  );
 
   const errors = [];
   page.on("pageerror", (e) => errors.push(e.message));
