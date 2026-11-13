@@ -1,0 +1,35 @@
+{
+  "_README": [
+    "Where each part of the Hero Arm sits in the assembled arm.",
+    "Fed to scripts/pose.py, which bakes these into public/models/prosthetic-parts.glb.",
+    "",
+    "model_part2 socket cup   the bottom, where the residual limb goes",
+    "model_part1 forearm      the main shell above it",
+    "model_part0 hand         fingers and palm, on top",
+    "",
+    "'align' is the direction in the part's own space that should point up; run",
+    "python3 scripts/pose.py --axes <file> to get each part's principal axis."
+  ],
+
+  "model_part2": {
+    "align": [0.502, 0.709, 0.496],
+    "flip": true,
+    "centre": "xz",
+    "base": 0.0
+  },
+
+  "model_part1": {
+    "align": [-0.024, -0.995, 0.093],
+    "flip": true,
+    "centre": "xz",
+    "base": 0.22
+  },
+
+  "model_part0": {
+    "align": [0.706, -0.708, 0.007],
+    "flip": true,
+    "centre": "xz",
+    "base": 1.2,
+    "offset": [-0.03, 0, 0.01]
+  }
+}

@@ -30,7 +30,7 @@ const OUT = process.argv[2] || "out/qa";
 const MACHINES = [
   ["The Motorcycle", "moto", 5],
   ["The Robotic Arm", "arm", 0],
-  ["The Prosthetic", "prosthetic", 6],
+  ["The Prosthetic", "prosthetic", 0],
   ["The Tablet", "tablet", 4],
   ["The Laptop", "computer", 7],
   ["The 3D Printer", "printer", 6],

@@ -39,6 +39,7 @@
   },
 
   "prosthetic": {
+    "parts": "/models/prosthetic-parts.glb",
     "complete": "/models/prosthetic-arm.glb",
     "scale": 3.4,
     "spots": {
