@@ -530,8 +530,9 @@ const VEHICLES: Record<VehicleId, Vehicle> = {
     short: "Prosthetic",
     tagline: "A cable-driven hand with muscle control",
     groundY: -1.1,
-    focus: [0, 0.6, 0],
-    camera: [1.8, 1.2, 5.2],
+    focus: [0, 0.5, 0],
+    // wide enough to take in the sensor band and battery standing either side
+    camera: [1.4, 1.3, 8.6],
     model: MODELS.prosthetic,
     parts: [
       mpart("model_part2", "Socket", "Thermoformed shell, silicone liner", [0, -1.4, 0],
