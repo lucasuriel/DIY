@@ -75,7 +75,10 @@ interface Part {
 interface ModelSource {
   /** leave out for a one-piece model: it then stays whole and its parts become hotspots (see spots) */
   parts?: string;
-  complete: string;
+  /** the assembled one-piece model, swapped in once every part is placed.
+   *  Leave it out when the parts are themselves the finished machine, so that
+   *  nothing in the parts file disappears at the end. */
+  complete?: string;
   /** model units to scene units */
   scale: number;
   /** one-piece models: where each part sits on the model, by part id: [x, y, z] in model units,
@@ -1293,15 +1296,18 @@ function Viewport({ vehicleId, count, explode, selectedId, onSelect, cmd, hoverI
         sm.envMapIntensity = 1.25;
       };
       setLoading("loading");
-      Promise.all([model.parts ? loadGLB(model.parts) : Promise.resolve(null), loadGLB(model.complete)])
+      Promise.all([
+        model.parts ? loadGLB(model.parts) : Promise.resolve(null),
+        model.complete ? loadGLB(model.complete) : Promise.resolve(null),
+      ])
         .then(([partsScene, completeScene]) => {
           if (disposed) {
             if (partsScene) disposeTree(partsScene);
-            disposeTree(completeScene);
+            if (completeScene) disposeTree(completeScene);
             return;
           }
           if (partsScene) owned.push(partsScene);
-          owned.push(completeScene);
+          if (completeScene) owned.push(completeScene);
           const root = new THREE.Group();
           root.scale.setScalar(unit);
           root.position.y = v.groundY;
@@ -1362,15 +1368,21 @@ function Viewport({ vehicleId, count, explode, selectedId, onSelect, cmd, hoverI
           });
           const blueprint = new THREE.MeshBasicMaterial({ color: 0x3b82f6, transparent: true, opacity: 0.1, depthWrite: false });
           mats.push(blueprint);
-          const cm: { m: THREE.Mesh; solid: THREE.Material | THREE.Material[] }[] = [];
-          completeScene.traverse((o) => {
-            const m = o as THREE.Mesh;
-            if (!m.isMesh) return;
-            (Array.isArray(m.material) ? m.material : [m.material]).forEach(reflect);
-            cm.push({ m, solid: m.material });
-          });
-          root.add(completeScene);
-          complete = { root: completeScene, meshes: cm, blueprint };
+          // A machine whose parts are themselves the finished thing has no separate
+          // complete model. Without one the parts simply stay on screen when
+          // assembled, instead of being swapped for a one-piece version that would
+          // not contain them.
+          if (completeScene) {
+            const cm: { m: THREE.Mesh; solid: THREE.Material | THREE.Material[] }[] = [];
+            completeScene.traverse((o) => {
+              const m = o as THREE.Mesh;
+              if (!m.isMesh) return;
+              (Array.isArray(m.material) ? m.material : [m.material]).forEach(reflect);
+              cm.push({ m, solid: m.material });
+            });
+            root.add(completeScene);
+            complete = { root: completeScene, meshes: cm, blueprint };
+          }
           setLoading("idle");
         })
         .catch(() => { if (!disposed) setLoading("error"); });

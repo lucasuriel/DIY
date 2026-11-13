@@ -19,7 +19,6 @@
     "Run scripts/propose-hotspots.py to get measured starting coordinates for a new model,",
     "and scripts/qa.js to check that every spot still lands on the mesh."
   ],
-
   "moto": {
     "complete": "/models/motorcycle.glb",
     "scale": 4.0,
@@ -31,27 +30,15 @@
       "chain": [0.257, 0.142, 0.07, 10]
     }
   },
-
   "arm": {
     "parts": "/models/robot-arm-parts.glb",
     "complete": "/models/robot-arm-complete.glb",
     "scale": 1.9
   },
-
   "prosthetic": {
     "parts": "/models/prosthetic-parts.glb",
-    "complete": "/models/prosthetic-arm.glb",
-    "scale": 3.4,
-    "spots": {
-      "socket": [-0.023, 0.076, 0.085, 0],
-      "battery": [-0.071, 0.215, 0.072, -20],
-      "sensor": [0.009, 0.296, -0.06, 180],
-      "cables": [-0.006, 0.4, 0.104, 0],
-      "actuator": [0.006, 0.559, 0.082, 0],
-      "hand": [0.007, 0.88, 0.038, 0]
-    }
+    "scale": 3.4
   },
-
   "tablet": {
     "complete": "/models/tablet.glb",
     "scale": 3.0,
@@ -62,7 +49,6 @@
       "battery": [0, 0.4, -0.03, 180]
     }
   },
-
   "computer": {
     "complete": "/models/laptop.glb",
     "scale": 3.6,
@@ -76,7 +62,6 @@
       "battery": [0, 0.05, 0.15, 0]
     }
   },
-
   "printer": {
     "complete": "/models/printer-3d.glb",
     "scale": 3.4,
@@ -89,7 +74,6 @@
       "filament": [0, 0.92, 0.05, 0]
     }
   },
-
   "reactor": {
     "complete": "/models/bioreactor.glb",
     "scale": 3.6,
