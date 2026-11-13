@@ -180,6 +180,7 @@ def main():
     with open(poses_path) as fh:
         poses = json.load(fh)
     found = mesh_nodes(gltf)
+    placed = {}
 
     for name, pose in poses.items():
         if name.startswith("_"):
@@ -214,8 +215,31 @@ def main():
         node.pop("matrix", None)
         node["rotation"] = [round(v, 6) for v in q]
         node["translation"] = [round(float(v), 6) for v in t]
+        placed[name] = (named_node, turned + t)
         size = np.round(hi - lo, 3)
         print(f"  {name}: size {size}  base y={pose.get('base', 0)}")
+
+    # The app applies model.scale to raw GLB coordinates without normalising
+    # anything, and hotspot positions are written as if the model were one unit
+    # across. So the whole assembly is scaled here, as a group, to largest
+    # dimension 1.0 with its base on y = 0 and centred on x and z.
+    #
+    # The scale has to go on the part nodes themselves, not on a parent: the app
+    # reparents each named node to its own group, which would drop any ancestor
+    # transform.
+    if placed and poses.get("_normalise", True):
+        every = np.concatenate([p for _, p in placed.values()])
+        lo, hi = every.min(axis=0), every.max(axis=0)
+        s = 1.0 / float((hi - lo).max())
+        shift = np.array(
+            [-(lo[0] + hi[0]) / 2 * s, -lo[1] * s, -(lo[2] + hi[2]) / 2 * s]
+        )
+        for name, (node_index, _) in placed.items():
+            node = gltf["nodes"][node_index]
+            t = np.asarray(node["translation"], dtype=float) * s + shift
+            node["translation"] = [round(float(v), 6) for v in t]
+            node["scale"] = [round(s, 8)] * 3
+        print(f"normalised: {np.round(hi - lo, 3)} -> largest dimension 1.0")
 
     write_glb(dst, gltf, blob)
     print(f"wrote {dst}")

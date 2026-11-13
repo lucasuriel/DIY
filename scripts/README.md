@@ -8,7 +8,21 @@ Run these from the project root.
 1. **Generate the model.** Prompts live in the Meshy Prompt Pack. One sheet per
    machine, parts laid out in a single row with real gaps between them.
 
-2. **Clean it up.**
+2. **Normalise it.** The sandbox does *not* normalise models when it loads them:
+   it multiplies the raw GLB coordinates by the machine's `scale` and nothing
+   else, while hotspot positions are written as if every model were one unit
+   across. A model straight out of gltfpack is whatever size Meshy made it, so
+   it will come in at the wrong scale with every hotspot misplaced.
+
+   ```
+   python3 scripts/normalise.py --check public/models/thing.glb
+   python3 scripts/normalise.py raw.glb public/models/thing.glb
+   ```
+
+   `scripts/pose.py` does this itself, across all the parts at once, so a parts
+   model does not need a separate pass.
+
+3. **Clean it up.**
 
    ```
    python3 scripts/prep.py scripts/ raw.glb public/models/thing.glb '{"keep": [...]}'
@@ -17,10 +31,10 @@ Run these from the project root.
    Keeps the islands you want, drops ground plates, normalises size, shrinks
    textures. Run it with no options first to see what islands exist.
 
-3. **Add it to `data/machines.json`** with its model path, a scale, and a rough
+4. **Add it to `data/machines.json`** with its model path, a scale, and a rough
    guess at each hotspot position.
 
-4. **Measure the hotspots properly.**
+5. **Measure the hotspots properly.**
 
    ```
    python3 scripts/hotspots.py box thing      # bounding box and heights
@@ -28,7 +42,7 @@ Run these from the project root.
    python3 scripts/hotspots.py snap thing     # snapped coordinates to paste back
    ```
 
-5. **Look at it.**
+6. **Look at it.**
 
    ```
    npm run build
