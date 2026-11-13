@@ -200,6 +200,16 @@ def main():
         if pose.get("roll"):
             a = np.radians(pose["roll"]) / 2
             q = quat_mul([0.0, float(np.sin(a)), 0.0, float(np.cos(a))], q)
+        # "rotate" is a plain x, y, z nudge in degrees, applied after the rest.
+        # Principal-axis alignment gets a part standing up but says nothing about
+        # which way it faces or how it leans, and that is what this corrects.
+        for axis, degrees in enumerate(pose.get("rotate", [0, 0, 0])):
+            if not degrees:
+                continue
+            a = np.radians(degrees) / 2
+            v = [0.0, 0.0, 0.0]
+            v[axis] = float(np.sin(a))
+            q = quat_mul([*v, float(np.cos(a))], q)
 
         turned = (quat_matrix(q) @ pts.T).T
         lo, hi = turned.min(axis=0), turned.max(axis=0)

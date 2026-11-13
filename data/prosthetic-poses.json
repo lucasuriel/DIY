@@ -1,35 +1,91 @@
 {
   "_README": [
-    "Where each part of the Hero Arm sits in the assembled arm.",
-    "Fed to scripts/pose.py, which bakes these into public/models/prosthetic-parts.glb.",
+    "Where each piece of the Hero Arm sits. Fed to scripts/pose.py, which bakes",
+    "these into public/models/prosthetic-parts.glb and scales the whole group to",
+    "largest dimension 1.0 (the app does not normalise anything itself).",
     "",
-    "model_part2 socket cup   the bottom, where the residual limb goes",
-    "model_part1 forearm      the main shell above it",
-    "model_part0 hand         fingers and palm, on top",
+    "  model_part2  socket cup    the bottom, where the residual limb goes",
+    "  model_part1  forearm       the main shell",
+    "  model_part0  hand          fingers and palm, on top",
+    "  emg          sensor band   worn on the limb, stands to the left",
+    "  battery      battery pack  stands to the right",
     "",
-    "'align' is the direction in the part's own space that should point up; run",
-    "python3 scripts/pose.py --axes <file> to get each part's principal axis."
+    "'align' is the direction in the part's own space that should point up:",
+    "python3 scripts/pose.py --axes <file> prints each part's principal axis.",
+    "'rotate' is an x, y, z nudge in degrees for lean and facing, which the",
+    "axis alignment cannot work out on its own."
   ],
-
   "model_part2": {
-    "align": [0.502, 0.709, 0.496],
+    "align": [
+      0.502,
+      0.709,
+      0.496
+    ],
     "flip": true,
     "centre": "xz",
-    "base": 0.0
+    "base": 0.0,
+    "rotate": [
+      6,
+      0,
+      4
+    ]
   },
-
   "model_part1": {
-    "align": [-0.024, -0.995, 0.093],
+    "align": [
+      -0.024,
+      -0.995,
+      0.093
+    ],
     "flip": true,
     "centre": "xz",
-    "base": 0.22
+    "base": 0.2
   },
-
   "model_part0": {
-    "align": [0.706, -0.708, 0.007],
+    "align": [
+      0.706,
+      -0.708,
+      0.007
+    ],
     "flip": true,
+    "rotate": [
+      0,
+      0,
+      -13
+    ],
     "centre": "xz",
-    "base": 1.2,
-    "offset": [-0.03, 0, 0.01]
+    "base": 1.16,
+    "offset": [
+      0,
+      0,
+      0.01
+    ]
+  },
+  "emg": {
+    "align": [
+      0.999,
+      0.047,
+      0.0
+    ],
+    "centre": "xz",
+    "base": 0.0,
+    "offset": [
+      -1.05,
+      0,
+      0
+    ]
+  },
+  "battery": {
+    "align": [
+      0.615,
+      -0.12,
+      0.779
+    ],
+    "centre": "xz",
+    "base": 0.0,
+    "offset": [
+      1.0,
+      0,
+      0
+    ]
   }
 }
