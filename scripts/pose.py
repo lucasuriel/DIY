@@ -160,6 +160,29 @@ def principal(pts):
     return vt[0]
 
 
+def longest(pts, samples=4000):
+    """The direction the part is longest in.
+
+    This is not the principal axis. The principal axis follows the spread of
+    mass, so a hand's thumb and palm drag it off the wrist-to-fingertip line and
+    the part ends up leaning once it is stood up. What matters for standing a
+    part upright is its longest measurement, so this projects onto a spread of
+    directions and keeps whichever gives the greatest extent.
+    """
+    p = pts[:: max(1, len(pts) // samples)]
+    # Fibonacci hemisphere: evenly spread directions, no clustering at the poles.
+    n = 600
+    i = np.arange(n) + 0.5
+    phi = np.arccos(1 - i / n)  # 0..pi/2, upper hemisphere only
+    theta = np.pi * (1 + 5**0.5) * i
+    dirs = np.stack(
+        [np.sin(phi) * np.cos(theta), np.cos(phi), np.sin(phi) * np.sin(theta)], axis=1
+    )
+    proj = p @ dirs.T
+    extent = proj.max(axis=0) - proj.min(axis=0)
+    return dirs[int(np.argmax(extent))]
+
+
 def main():
     args = sys.argv[1:]
     if args and args[0] == "--axes":
@@ -168,7 +191,8 @@ def main():
             pts = points(gltf, blob, named, mesh_node)
             lo, hi = pts.min(axis=0), pts.max(axis=0)
             print(f"{name}")
-            print(f"  size {np.round(hi - lo, 3)}   axis {np.round(principal(pts), 3)}")
+            print(f"  size {np.round(hi - lo, 3)}")
+            print(f"  principal {np.round(principal(pts), 3)}   longest {np.round(longest(pts), 3)}")
         return 0
 
     if len(args) < 3:
@@ -192,7 +216,14 @@ def main():
         pts = points(gltf, blob, named_node, mesh_node)
 
         q = [0.0, 0.0, 0.0, 1.0]
-        if "align" in pose:
+        if pose.get("upright"):
+            # Stand the part on its longest measurement, which is what makes it
+            # look straight. See longest() for why this is not the principal axis.
+            axis = longest(pts)
+            if pose.get("flip"):
+                axis = -axis
+            q = rotation_to(axis)
+        elif "align" in pose:
             axis = np.asarray(pose["align"], dtype=float)
             if pose.get("flip"):
                 axis = -axis
@@ -212,6 +243,11 @@ def main():
             q = quat_mul([*v, float(np.cos(a))], q)
 
         turned = (quat_matrix(q) @ pts.T).T
+        # "size" shrinks or grows one part relative to the rest, for something
+        # that is modelled at its own scale rather than the machine's.
+        k = float(pose.get("size", 1.0))
+        if k != 1.0:
+            turned = turned * k
         lo, hi = turned.min(axis=0), turned.max(axis=0)
         t = np.zeros(3)
         if pose.get("centre") == "xz":
@@ -225,6 +261,7 @@ def main():
         node.pop("matrix", None)
         node["rotation"] = [round(v, 6) for v in q]
         node["translation"] = [round(float(v), 6) for v in t]
+        node["scale"] = [k, k, k]
         placed[name] = (named_node, turned + t)
         size = np.round(hi - lo, 3)
         print(f"  {name}: size {size}  base y={pose.get('base', 0)}")
@@ -248,7 +285,8 @@ def main():
             node = gltf["nodes"][node_index]
             t = np.asarray(node["translation"], dtype=float) * s + shift
             node["translation"] = [round(float(v), 6) for v in t]
-            node["scale"] = [round(s, 8)] * 3
+            k = node.get("scale", [1.0])[0]
+            node["scale"] = [round(k * s, 10)] * 3
         print(f"normalised: {np.round(hi - lo, 3)} -> largest dimension 1.0")
 
     write_glb(dst, gltf, blob)

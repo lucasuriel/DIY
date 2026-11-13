@@ -25,9 +25,9 @@
     "centre": "xz",
     "base": 0.0,
     "rotate": [
-      6,
+      20,
       0,
-      4
+      -10
     ]
   },
   "model_part1": {
@@ -50,7 +50,7 @@
     "rotate": [
       0,
       0,
-      -13
+      -20
     ],
     "centre": "xz",
     "base": 1.16,
@@ -69,10 +69,11 @@
     "centre": "xz",
     "base": 0.0,
     "offset": [
-      -1.05,
+      -0.75,
       0,
       0
-    ]
+    ],
+    "size": 0.45
   },
   "battery": {
     "align": [
@@ -83,9 +84,10 @@
     "centre": "xz",
     "base": 0.0,
     "offset": [
-      1.0,
+      0.7,
       0,
       0
-    ]
+    ],
+    "size": 0.45
   }
 }
